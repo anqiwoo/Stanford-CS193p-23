@@ -8,8 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis: Array<String> = ["👻", "🎃", "🕷️", "😈", "🐱", "🥶", "😶‍🌫️", "🤭", "🤡", "💃", "🐰", "🦁"]
-    @State var cardCount: Int = 4
+    @State var emojis = [
+        ["🚙", "🚗", "🚕", "🚗", "🚎", "🚌", "🚕", "🚙", "🚎", "🚑", "🚌", "🏎️"],
+        ["🐱", "🐷", "🐶", "🐭", "🐯", "🐯", "🐮", "🐴", "🐭", "🐴", "🐶", "🐷", "🐱", "🐮", "🦁", "🦁"],
+        ["🤣", "😊", "😃", "😂", "😀", "😂", "😃", "🤣", "😁", "😁", "😇", "😄", "😇", "😆", "😆", "😅", "😅", "😄", "😀", "😊"]
+    ]
+    @State var themeIndex = 0
+    // Define a grid layout with 5 columns
+    let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 5)
     
     var body: some View {
         VStack {
@@ -19,49 +25,62 @@ struct ContentView: View {
                 cards
             }
             Spacer()
-            cardCountAdjusters
+            themeChoosers
         }
         .padding()
     }
     
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
-            ForEach(0..<cardCount, id: \.self) { index in
-                CardView(content: emojis[index])
+        LazyVGrid(columns: columns, spacing: 5) {
+            ForEach(0..<emojis[themeIndex].count, id: \.self) { index in
+                CardView(content: emojis[themeIndex][index])
                     .aspectRatio(2/3, contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
             }
-        }.foregroundColor(.orange)
+        }.foregroundColor(.red)
     }
     
-    var cardCountAdjusters: some View {
+    var themeChoosers: some View {
         HStack {
-            cardRemover
             Spacer()
-            cardAdder
+            vehicleTheme
+            Spacer()
+            animalTheme
+            Spacer()
+            faceTheme
+            Spacer()
         }.imageScale(.large)
-            .font(.largeTitle)
     }
     
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action: {
-            cardCount += offset
-        }, label: {
-            Image(systemName: symbol)
-        }).disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
+    func themeChooser(by offset: Int, symbol: String, text: String) -> some View {
+        VStack {
+            Button(action: {
+                themeIndex = offset
+                emojis[themeIndex].shuffle()
+            }, label: {
+                Image(systemName: symbol)
+            })
+            Text(text)
+                .font(.body)
+                .foregroundColor(.blue)
+        }.font(.title)
     }
     
-    var cardRemover: some View {
-        cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
+    var vehicleTheme: some View {
+        themeChooser(by: 0, symbol: "car", text: "Vehicles")
     }
     
-    var cardAdder: some View {
-        cardCountAdjuster(by: +1, symbol: "rectangle.stack.badge.plus.fill")
+    var animalTheme: some View {
+        themeChooser(by: 1, symbol: "pawprint.fill", text: "Animals")
+    }
+    
+    var faceTheme: some View {
+        themeChooser(by: 2, symbol: "face.smiling.inverse", text: "Faces")
     }
 }
 
 struct CardView: View {
     let content: String
-    @State var isFaceUp = true
+    @State var isFaceUp = false
     
     var body: some View {
         ZStack {
