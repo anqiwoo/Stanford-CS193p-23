@@ -40,7 +40,7 @@ struct ContentView: View {
     }
     
     var themeChoosers: some View {
-        HStack {
+        HStack(alignment: .lastTextBaseline) {
             Spacer()
             vehicleTheme
             Spacer()
