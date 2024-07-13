@@ -30,13 +30,24 @@ struct ContentView: View {
         .padding()
     }
     
+    var cardColor: Color {
+        switch themeIndex {
+            case 0:
+                return .red
+            case 1:
+                return .orange
+            default:
+                return .yellow
+        }
+    }
+    
     var cards: some View {
         LazyVGrid(columns: columns, spacing: 5) {
             ForEach(0..<emojis[themeIndex].count, id: \.self) { index in
                 CardView(content: emojis[themeIndex][index])
                     .aspectRatio(2/3, contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
             }
-        }.foregroundColor(.red)
+        }.foregroundColor(cardColor)
     }
     
     var themeChoosers: some View {
