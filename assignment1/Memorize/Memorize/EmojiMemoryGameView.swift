@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
-    // @ObservedObject: If this thing says something changed, we redraw the view (I am observing this thing)
+    // @ObservedObject: If this thing says something changed, we redraw the view (I am observing this thing, and it should be passed in by someone else!)
     @ObservedObject var viewModel: EmojiMemoryGame
     
     init(viewModel: EmojiMemoryGame) {
@@ -21,6 +21,7 @@ struct EmojiMemoryGameView: View {
                 .font(.largeTitle)
             ScrollView {
                 cards
+                    .animation(.default, value: viewModel.cards)
             }
             Button("Shuffle") {
                 viewModel.shuffle()
@@ -31,10 +32,13 @@ struct EmojiMemoryGameView: View {
     
     var cards: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
-            ForEach(viewModel.cards.indices, id: \.self) { index in
-                CardView(viewModel.cards[index])
+            ForEach(viewModel.cards) { card in
+                CardView(card)
                     .aspectRatio(2/3, contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
                     .padding(4)
+                    .onTapGesture {
+                        viewModel.choose(card)
+                    }
             }
         }.foregroundColor(.orange)
     }
@@ -59,12 +63,9 @@ struct CardView: View {
                     .aspectRatio(1, contentMode: .fit)
             }.opacity(card.isFaceUp ? 1: 0)
             base.fill().opacity(card.isFaceUp ? 0: 1)
-        }
+        }.opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
     }
 }
-
-
-
 
 
 
