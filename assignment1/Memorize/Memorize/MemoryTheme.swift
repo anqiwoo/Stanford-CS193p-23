@@ -22,13 +22,13 @@ enum MemoryTheme: String, CaseIterable {
         case .oceanAdventure:
             return 6
         case .farmFriends:
-            return 5
-        case .arcticAnimals:
-            return 6
-        case .woodlandCreatures:
             return 7
-        case .desertDwellers:
+        case .arcticAnimals:
             return 8
+        case .woodlandCreatures:
+            return 9
+        case .desertDwellers:
+            return 10
         }
     }
     

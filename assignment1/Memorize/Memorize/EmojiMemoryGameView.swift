@@ -11,6 +11,8 @@ struct EmojiMemoryGameView: View {
     // @ObservedObject: If this thing says something changed, we redraw the view (I am observing this thing, and it should be passed in by someone else!)
     @ObservedObject var viewModel: EmojiMemoryGame
     
+    private let aspectRatio: CGFloat = 2/3
+    
     init(viewModel: EmojiMemoryGame) {
         self.viewModel = viewModel
     }
@@ -23,10 +25,10 @@ struct EmojiMemoryGameView: View {
                 .font(.title2).padding(1).foregroundColor(viewModel.getScoreColor()).bold()
             Text("Theme: \(viewModel.getThemeName())")
                 .font(.title2).foregroundColor(viewModel.getThemeColor())
-            ScrollView {
+//            ScrollView {
                 cards
                     .animation(.default, value: viewModel.cards)
-            }
+//            }
             HStack {
                 Button("Shuffle") {
                     viewModel.shuffle()
@@ -39,18 +41,16 @@ struct EmojiMemoryGameView: View {
         }
         .padding()
     }
-    
-    var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
-            ForEach(viewModel.cards) { card in
+   
+    private var cards: some View {
+        AspectVGrid(viewModel.cards, aspectRatio: aspectRatio) { card in
                 CardView(card)
-                    .aspectRatio(2/3, contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
-                    .padding(4)
-                    .onTapGesture {
-                        viewModel.choose(card)
-                    }
-            }
-        }.foregroundColor(viewModel.getThemeColor())
+                .padding(4)
+                .onTapGesture {
+                    viewModel.choose(card)
+                }
+        }
+        .foregroundColor(viewModel.getThemeColor())
     }
 }
 
