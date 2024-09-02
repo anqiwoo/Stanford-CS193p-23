@@ -9,6 +9,8 @@ import SwiftUI // ViewModel is part of the UI :) But it is not creating any view
 
 class EmojiMemoryGame: ObservableObject {
     
+    typealias Card = MemoryGame<String>.Card
+    
     init() {
         let theme = EmojiMemoryGame.createMemoryTheme()
         self.theme = theme
@@ -35,7 +37,7 @@ class EmojiMemoryGame: ObservableObject {
     @Published private(set) var model: MemoryGame<String>
     @Published private(set) var theme: MemoryTheme!
     
-    var cards: Array<MemoryGame<String>.Card> {
+    var cards: Array<Card> {
         return model.cards
     }
     
@@ -82,7 +84,7 @@ class EmojiMemoryGame: ObservableObject {
         }
     }
 
-    func choose(_ card: MemoryGame<String>.Card) {
+    func choose(_ card: Card) {
         model.choose(card)
     }
 }
