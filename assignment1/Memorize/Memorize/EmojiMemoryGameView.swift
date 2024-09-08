@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
+    typealias Card = MemoryGame<String>.Card
+    
     // @ObservedObject: If this thing says something changed, we redraw the view (I am observing this thing, and it should be passed in by someone else!)
     @ObservedObject var viewModel: EmojiMemoryGame
     
@@ -20,38 +22,68 @@ struct EmojiMemoryGameView: View {
     
     var body: some View {
         VStack {
-            Text("Memorize!")
-                .font(.largeTitle)
-            Text("Score: \(viewModel.getScore())")
-                .font(.title2).padding(spacing).foregroundColor(viewModel.getScoreColor()).bold()
-            Text("Theme: \(viewModel.getThemeName())")
-                .font(.title2).foregroundColor(viewModel.getThemeColor())
-//            ScrollView {
-                cards
-                    .animation(.default, value: viewModel.cards)
-//            }
+            title
+            score
+            theme
+            cards
             HStack {
-                Button("Shuffle") {
-                    viewModel.shuffle()
-                }.font(.title2)
+                shuffle
                 Spacer()
-                Button("New Game") {
-                    viewModel.newGame()
-                }.font(.title2)
+                newGame
             }
         }
         .padding()
     }
+    
+    private var title: some View {
+        Text("Memorize!")
+            .font(.largeTitle)
+    }
+    
+    private var score: some View {
+        Text("Score: \(viewModel.getScore())")
+            .font(.title2)
+            .padding(spacing)
+            .foregroundColor(viewModel.getScoreColor())
+            .bold()
+            .animation(nil, value: viewModel.getScore())
+    }
    
+    private var theme: some View {
+        Text("Theme: \(viewModel.getThemeName())")
+            .font(.title2).foregroundColor(viewModel.getThemeColor())
+    }
+    
     private var cards: some View {
         AspectVGrid(viewModel.cards, aspectRatio: aspectRatio) { card in
                 CardView(card)
                 .padding(spacing)
+                .overlay(FlyingNumber(number: scoreChange(causedBy: card)))
                 .onTapGesture {
-                    viewModel.choose(card)
+                    withAnimation {
+                        viewModel.choose(card)
+                    }
                 }
         }
         .foregroundColor(viewModel.getThemeColor())
+    }
+    
+    private func scoreChange(causedBy card: Card) -> Int {
+        return 0
+    }
+    
+    private var shuffle: some View {
+        Button("Shuffle") {
+            withAnimation {
+                viewModel.shuffle()
+            }
+        }.font(.title2)
+    }
+    
+    private var newGame: some View {
+        Button("New Game") {
+            viewModel.newGame()
+        }.font(.title2)
     }
 }
 

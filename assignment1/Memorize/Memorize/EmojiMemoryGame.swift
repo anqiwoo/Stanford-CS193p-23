@@ -56,15 +56,15 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     func getScore() -> Int {
-        return model.getScore()
+        model.getScore()
     }
     
     func getScoreColor() -> Color {
-        return model.getScore() >= 0 ? .green : .red
+        model.getScore() >= 0 ? .green : .red
     }
     
     func getThemeName() -> String {
-        return theme.rawValue
+        theme.rawValue
     }
     
     func getThemeColor() -> Color {
